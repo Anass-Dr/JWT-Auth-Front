@@ -1,6 +1,6 @@
 import { useState, useContext } from "react"
-import { LoaderContext } from "@/context/LoaderContext"
-import axios from "axios"
+import { NavLink } from "react-router-dom"
+import { AuthContext } from "@/context/AuthContext.jsx"
 import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
@@ -13,7 +13,7 @@ import validate from "@/utils/inputValidate"
 export default function RegisterPage() {
     const [user, setUser] = useState({username: '', email: '', password: '', phone: '', address: ''})
     const [passwordStrength, setPasswordStrength] = useState(0)
-    const {setLoading} = useContext(LoaderContext)
+    const Auth = useContext(AuthContext);
 
     const checkPasswordStrength = (pass) => {
         let strength = 0
@@ -35,15 +35,10 @@ export default function RegisterPage() {
         try {
             await validate(user, ['username', 'email', 'password', 'phone', 'address']);
             const phone = "+212" + user.phone.substring(1);
-            setLoading(true);
-            const response = await axios.post('http://localhost:3000/api/auth/register', {...user, phone});
-            const data = await response.data;
-            setLoading(false);
-            toast(data.message);
+            const userData = {...user, phone};
+            if (await Auth.register(userData)) setUser({username: '', email: '', password: '', phone: '', address: ''});
         } catch (error) {
-            setLoading(false);
-            const errorMessage = Object.hasOwn(error, 'response') ? error.response.data.message : error.message;
-            toast(errorMessage);
+            toast(error.message);
         }
     }
 
@@ -59,11 +54,11 @@ export default function RegisterPage() {
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <Label htmlFor="username">Username</Label>
-                            <Input id="username" placeholder="John Doe" onChange={handleChange} required/>
+                            <Input id="username" placeholder="John Doe" onChange={handleChange} value={user.username} required/>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="john@example.com" onChange={handleChange} required/>
+                            <Input id="email" type="email" placeholder="john@example.com" onChange={handleChange} value={user.email} required/>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="password">Password</Label>
@@ -72,17 +67,18 @@ export default function RegisterPage() {
                                 type="password"
                                 required
                                 onChange={(e) => checkPasswordStrength(e.target.value)}
+                                value={user.password}
                             />
                             <Progress value={passwordStrength} className="h-2"/>
                             <p className="text-sm text-gray-500">Password strength: {passwordStrength}%</p>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="phone">Phone Number</Label>
-                            <Input id="phone" type="text" onChange={handleChange} required/>
+                            <Input id="phone" type="text" onChange={handleChange} required value={user.phone} />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="address">Address</Label>
-                            <Input id="address" type="text" onChange={handleChange} required/>
+                            <Input id="address" type="text" onChange={handleChange} required value={user.address} />
                         </div>
                         <div className="mt-4 space-y-2">
                             <Button className="w-full">Register</Button>
@@ -96,7 +92,7 @@ export default function RegisterPage() {
                 </CardContent>
                 <CardFooter>
                     <p className="text-sm text-gray-500">
-                        Already have an account? <a href="/login" className="text-blue-500 hover:underline">Login</a>
+                        Already have an account? <NavLink to="/signin" className="text-blue-500 hover:underline">Sign in</NavLink>
                     </p>
                 </CardFooter>
             </Card>
