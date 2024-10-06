@@ -12,7 +12,6 @@ const VerifyEmail = lazy(() => import('./pages/VerifyEmailPage.jsx'));
 const OTPVerification = lazy(() => import('./pages/OTPVerificationPage.jsx'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPasswordPage.jsx'));
 const ResetPassword = lazy(() => import('./pages/ResetPasswordPage.jsx'));
-const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const Logout = lazy(() => import('./pages/LogoutPage.jsx'));
 
 const router = createBrowserRouter([
@@ -43,10 +42,6 @@ const router = createBrowserRouter([
     {
         path: '/logout',
         element: <LazyWrapper Component={Logout} />,
-    },
-    {
-        path: '/',
-        element: <LazyWrapper Component={HomePage} />,
     }
 ]);
 
