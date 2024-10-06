@@ -10,7 +10,7 @@ class Auth {
         this.setLoading = setLoading;
     }
 
-    register = async (userData) => {
+    async register (userData) {
         try {
             this.setLoading(true);
             const response = await axiosInstance.post('auth/register', userData);
@@ -25,7 +25,7 @@ class Auth {
         }
     }
 
-    login = async (userData) => {
+    async login (userData) {
         this.setUser({email: userData.email});
         localStorage.setItem('user', JSON.stringify(userData));
         try {
@@ -42,7 +42,7 @@ class Auth {
         }
     }
 
-    logout = async () => {
+    async logout () {
         try {
             localStorage.removeItem('ticket');
             localStorage.removeItem('user');
@@ -53,7 +53,7 @@ class Auth {
         }
     }
 
-    verifyEmail = async (token) => {
+    async verifyEmail (token) {
         try {
             const response = await axiosInstance.get(`auth/verify?token=${token}`);
             const data = await response.data;
@@ -65,7 +65,7 @@ class Auth {
         }
     }
 
-    resendVerificationEmail = async (email) => {
+    async resendVerificationEmail (email) {
         try {
             this.setLoading(true);
             const response = await axiosInstance.post('auth/send-email-verification', {email});
@@ -78,7 +78,7 @@ class Auth {
         }
     }
 
-    sendOTP = async (otpMethod) => {
+    async sendOTP (otpMethod) {
         if (!this.user) return false;
         try {
             this.setLoading(true);
@@ -94,7 +94,7 @@ class Auth {
         }
     }
 
-    verifyOTP = async (otp) => {
+    async verifyOTP (otp) {
         try {
             this.setLoading(true);
             const response = await axiosInstance.post('auth/verify-otp', {otp});
@@ -107,7 +107,7 @@ class Auth {
         }
     }
 
-    sendResetLink = async (email) => {
+    async sendResetLink (email) {
         try {
             this.setLoading(true);
             const response = await axiosInstance.post('auth/forgot-password', {email});
@@ -120,7 +120,7 @@ class Auth {
         }
     }
 
-    verifyResetToken = async (token) => {
+    async verifyResetToken (token) {
         try {
             const response = await axiosInstance.get(`auth/reset-password/verify?token=${token}`);
             const data = await response.data;
@@ -132,7 +132,7 @@ class Auth {
         }
     }
 
-    resetPassword = async (password) => {
+    async resetPassword (password) {
         const resetToken = localStorage.getItem('resetToken');
         try {
             this.setLoading(true);
